@@ -1,0 +1,93 @@
+# Rust
+/target/
+/target-local/
+Cargo.lock
+
+# WebAssembly
+/pkg/
+*.wasm
+
+# Output (렌더링 결과물)
+/output/
+/dist/swift/
+
+# Docker
+.docker/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 폰트 (저작권 보호)
+/ttfs/hwp/
+/ttfs/windows/
+/ttfs/hamchob-r.ttf
+/ttfs/hamchod-r.ttf
+/web/fonts/hamchob-r.woff2
+/web/fonts/hamchod-r.woff2
+/web/fonts/h2hdrm.woff2
+/web/fonts/hygprm.woff2
+/web/fonts/hygtre.woff2
+/web/fonts/hymjre.woff2
+/web/fonts/ArialW05-Regular.woff2
+/web/fonts/Calibri.woff2
+/web/fonts/CourierNewW05-Regular.woff2
+/web/fonts/TahomaW05-Regular.woff2
+/web/fonts/TimesNewRomanW05-Regular.woff2
+/web/fonts/VerdanaW05-Regular.woff2
+/web/fonts/MalgunGothicW35-Regular.woff2
+/web/fonts/WebdingsW95-Regular.woff2
+/web/fonts/WingdingsW95-3.woff2
+
+# 외부 참조
+/webhwp/
+/webgian/
+/saved/*.hwp
+!/saved/blank2010.hwp
+!/saved/pr360-edward.hwp
+.claude/*
+# .claude/skills/는 프로젝트 종속 Skill (rhwp 바이너리 호출, ingest_schema_v1 사용)이므로 추적
+!.claude/skills/
+
+# 환경변수 (민감 정보)
+.env
+.env.docker
+
+# E2E 스크린샷
+rhwp-studio/e2e/screenshots/
+
+# 비공개 테스트
+rhwp-studio/e2e/kps-ai*.test.mjs
+
+# 공개 리포 원본 파일 (prepare-github.sh용)
+CLAUDE.public.md
+README.public.md
+
+# 한컴 도움말 (저작권 보호)
+mydocs/manual/hwp/Help/
+
+# 개인 메모 영역 (작업지시자 전용, .gitkeep 만 tracked)
+mydocs/privacy/*
+!mydocs/privacy/.gitkeep
+
+# rhwp-vscode 빌드 산출물
+rhwp-vscode/media/rhwp.js
+rhwp-vscode/media/rhwp_bg.wasm
+
+# rhwp-chrome 빌드 산출물
+rhwp-chrome/dist/
+rhwp-chrome/*.zip
+
+# rhwp-firefox 빌드 산출물
+rhwp-firefox/dist/
+rhwp-firefox/*.zip
+
+# rhwp-safari 빌드 산출물
+rhwp-safari/dist/
+rhwp-safari/HWP Viewer/
+rhwp-safari/.DS_Store
+samples/issue836/

@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "hwpx-chunker"
+version = "0.1.0"
+description = "HWPX 한국어 규정·공문 문서 조문 단위 청크 변환기"
+requires-python = ">=3.9"
+# 런타임 의존성 없음 — 표준 라이브러리만 사용 (requirements.txt 참고)
+dependencies = []
+
+[project.optional-dependencies]
+# pip install -e ".[dev]"
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "mypy>=1.9",
+    "black>=24.0",
+    "ruff>=0.4",
+]
+
+[project.scripts]
+hwpx-chunk = "main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["regchunker*"]
+
+[tool.black]
+line-length = 100
+target-version = ["py39"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.mypy]
+python_version = "3.9"
+strict = false
+ignore_missing_imports = true

@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.env
+
+# 데이터/산출물 (KIBO 등 비공개 코퍼스·청크 — 공개 금지)
+output/
+_kibo_out/
+_test_out/
+_compare/
+*.log
+*.hwpx
+*.hwp
+
+# rhwp: 빌드 산출물·대용량 샘플·중첩 git 제외 (소스 코드는 유지)
+vendor/rhwp/.git/
+vendor/rhwp/target/
+vendor/rhwp/samples/
+vendor/rhwp/pdf/
+vendor/rhwp/pdf-large/
+vendor/rhwp/web/fonts/
+vendor/rhwp/mydocs/
+**/node_modules/
+
+# IDE / 내부 메모
+.idea/
+.vscode/
+*.iml
+CLAUDE.md
+
+# OS
+Thumbs.db
+.DS_Store
+
+# 임시 탐침 파일
+_probe_*.txt
+_inspect*.py
+_inspect*.txt
+_run_log*.txt

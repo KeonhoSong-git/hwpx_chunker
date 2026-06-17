@@ -1,0 +1,13 @@
+# hwpx_chunker 개발 도구 의존성
+# pip install -r requirements-dev.txt
+
+# 테스트
+pytest>=8.0
+pytest-cov>=5.0        # 커버리지 리포트
+
+# 타입 검사
+mypy>=1.9
+
+# 코드 포매터 / 린터
+black>=24.0
+ruff>=0.4              # 빠른 린터 (flake8 대체)

@@ -1,0 +1,3 @@
+# hwpx_chunker 런타임 의존성
+# 외부 패키지 없음 — Python 표준 라이브러리만 사용 (zipfile, re, json, dataclasses, logging, glob)
+# Python >= 3.9 필요
