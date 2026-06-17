@@ -36,7 +36,18 @@ python main.py "D:\regs\규정A.HWPX" --verbose
 # → output/ 에 결과 생성
 ```
 
-## 출력 형식
+## 입력
+
+- **형식**: `.HWPX` (한글 2010 이상). `.hwp`(구버전)·`.pdf`는 미지원.
+- **지정**: 디렉터리 · glob · 개별 파일 모두 가능.
+  ```bash
+  python main.py D:\regulations          # 폴더 안의 모든 .HWPX
+  python main.py "D:\regs\*.HWPX"        # glob
+  python main.py "D:\regs\감사규정.HWPX"   # 개별 파일
+  ```
+- 별도 전처리 불필요. 같은 폴더에 **규정(법규체)·공문(공문체)이 섞여 있어도** 문서별로 유형을 자동 판별해 분기 청킹한다.
+
+## 출력
 
 ```
 output/
@@ -46,33 +57,113 @@ output/
     └── <doc_id>.json    # 문서별 청크 배열
 ```
 
-각 청크는 다음 필드를 가진 dict (전체 레퍼런스: [`USAGE.md`](USAGE.md#청크-필드-레퍼런스)):
+### 예시 ① 법규체(규정) — 조문 1개가 청크 1개
 
+**입력 HWPX 본문(발췌)**
+```
+제1장 총칙
+  제1조(목적) 이 규정은 내부감사의 기준과 절차를 정하여 감사 기능을 강화함을 목적으로 한다.
+```
+**출력 청크 (`by_document/감사규정.json` 의 한 원소)**
+```json
+{
+  "chunk_id": "감사규정::제1조::0",
+  "doc_id": "감사규정",
+  "doc_title": "감사규정",
+  "doc_type": "규정",
+  "source_file": "감사규정.HWPX",
+  "doc_family": "법규체",
+  "unit": "조",
+  "hierarchy_path": "제1장 총칙 > 제1조",
+  "chapter_no": "1",
+  "chapter_title": "총칙",
+  "article_no": "1",
+  "article_branch": "",
+  "article_label": "제1조",
+  "article_title": "목적",
+  "enacted": "2010. 1. 1.",
+  "last_amended": "2023. 5. 1.",
+  "is_deleted": false,
+  "has_table": false,
+  "has_figure": false,
+  "split_index": 0,
+  "split_total": 1,
+  "char_len": 52,
+  "text": "제1조(목적) 이 규정은 내부감사의 기준과 절차를 정하여 감사 기능을 강화함을 목적으로 한다."
+}
+```
+
+### 예시 ② 공문체(업무지침) — 시달문 헤더 + 표 포함 절
+
+**입력 HWPX 본문(발췌)**
+```
+○○업무지침
+수신: 각 부점장        발신: 담당 이사
+1. 적용 대상
+   가. 원화·외화 대출
+   | 구분 | 내용 |
+   | 원화 | … |
+```
+**출력 청크 — 헤더(수신·발신 메타 분리)**
+```json
+{
+  "chunk_id": "○○업무지침::헤더::0",
+  "doc_title": "○○업무지침",
+  "doc_type": "기타",
+  "doc_family": "공문체",
+  "unit": "헤더",
+  "hierarchy_path": "헤더",
+  "article_label": "헤더",
+  "recipient": "각 부점장",
+  "sender": "담당 이사",
+  "char_len": 84,
+  "text": "○○업무지침\n수신: 각 부점장\n발신: 담당 이사\n시행 2024. 1. 1."
+}
+```
+**출력 청크 — 본문 절(표는 GFM 마크다운으로 별도 필드)**
+```json
+{
+  "chunk_id": "○○업무지침::1. 적용 대상::0",
+  "doc_title": "○○업무지침",
+  "doc_family": "공문체",
+  "unit": "본문",
+  "hierarchy_path": "1. 적용 대상",
+  "article_label": "1. 적용 대상",
+  "article_title": "1. 적용 대상",
+  "recipient": "각 부점장",
+  "sender": "담당 이사",
+  "has_table": true,
+  "char_len": 312,
+  "text": "1. 적용 대상\n가. 원화·외화 대출\n| 구분 | 내용 |\n|---|---|\n| 원화 | … |",
+  "table_markdown": "| 구분 | 내용 |\n|---|---|\n| 원화 | … |",
+  "table_html": "<table><tbody><tr><td>구분</td><td>내용</td></tr>…</table>"
+}
+```
+
+### 필드 레퍼런스(요약)
 | 필드 | 설명 |
 |------|------|
 | `chunk_id` · `doc_id` | 고유 ID(`doc_id::article_label::split_index`) · 문서 ID |
-| `doc_title` · `doc_type` | 문서 제목 · 규정 유형(`정관`/`규정`/`기준`/…/`기타`) |
+| `doc_title` · `doc_type` | 제목 · 규정 유형(`정관`/`규정`/`기준`/…/`기타`) |
 | `doc_family` | **`법규체`** 또는 **`공문체`** |
-| `unit` | 청크 단위 — 법규체: `연혁`/`조`/`부칙`, 공문체: `헤더`/`본문`/`붙임`/`목차` |
-| `hierarchy_path` | 계층 경로(`제1장 > 제5조`) |
-| `article_label` · `article_title` | 청크 레이블(`제5조`, `Ⅱ. 보증 절차`) · 제목 |
-| `chapter_no/title` · `section_no/title` · `article_no` · `article_branch` | (법규체) 장·절·조·가지조문 |
+| `unit` | 법규체: `연혁`/`조`/`부칙` · 공문체: `헤더`/`본문`/`붙임`/`목차` |
+| `hierarchy_path` · `article_label` · `article_title` | 계층 경로 · 청크 레이블 · 제목 |
+| `chapter_*` · `section_*` · `article_no` · `article_branch` | (법규체) 장·절·조·가지조문 |
 | `recipient` · `sender` | (공문체) 수신처 · 발신명의 |
 | `enacted` · `last_amended` · `amendment_dates` | 제정일 · 최종 개정일 · 개정일 목록 |
-| `is_deleted` · `has_table` · `has_figure` · `has_appendix_ref` | 삭제 조문 · 표 · 도형 · 붙임/별표 참조 여부 |
+| `is_deleted` · `has_table` · `has_figure` · `has_appendix_ref` | 삭제 조문 · 표 · 도형 · 붙임/별표 참조 |
 | `split_index` · `split_total` · `char_len` | 분할 순번 · 전체 분할 수 · 글자 수 |
 | `text` | 청크 본문 |
-| `table_markdown` · `table_html` · `table_xml` | 표(3형식) |
-| `figure_markdown` · `figure_html` · `figure_xml` | 도형(3형식) |
+| `table_markdown` · `table_html` · `table_xml` · `figure_*` | 표·도형(각 3형식) |
+
+> 전체 필드·`unit` 값 목록·문서유형 판별 로직·FAQ는 [`USAGE.md`](USAGE.md)에 있다.
 
 ### `stats.json` 예시
 ```json
 { "n_documents": 5, "n_chunks_total": 245,
   "by_unit": { "연혁": 5, "조": 132, "부칙": 108 },
-  "by_document": { "문서A": 37, "문서B": 23 } }
+  "by_document": { "감사규정": 37, "○○업무지침": 23 } }
 ```
-
-전체 설치·설정·문서유형 판별 로직·FAQ는 [`USAGE.md`](USAGE.md)에 있다.
 
 ## 라이선스 · 출처
 
