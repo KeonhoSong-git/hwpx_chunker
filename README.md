@@ -3,6 +3,8 @@
 한국어 **HWPX 규정·공문 문서**를 **조문(법규체) / 아웃라인 절(공문체)** 단위로 자동 청킹해 **구조화 JSON**으로 내보내는 파이프라인.
 RAG·지식그래프 등 다운스트림이 바로 쓸 수 있도록, 문서 계층(장·절·조)·표·도형·메타(제정/개정일·수신/발신)를 청크에 함께 담는다.
 
+> **제작 배경**: 규정 하이브리드 RAG 프로젝트 **[Law-Manual-HybridRAG](https://github.com/KeonhoSong-git/Law-Manual-HybridRAG)** 를 만들면서, 원본 규정이 대부분 HWPX라 **이를 읽어 RAG 입력으로 쪼개는 단계**가 필요해 별도 도구로 분리·제작했다. (그 프로젝트는 이 청크 형식을 그대로 받아 KG·벡터를 만든다.)
+
 > 본문·표·도형·**페이지 표시 순서**를 정확히 복원하기 위해, HWPX 렌더링에 Rust 엔진 **[rhwp](https://github.com/edwardkim/rhwp)** (MIT, © Edward Kim)를 사용한다. 자세한 사용법은 [`USAGE.md`](USAGE.md) 참고.
 
 ---
